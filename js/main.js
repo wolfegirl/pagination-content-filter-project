@@ -16,31 +16,29 @@ const showPage = (pageNumber, studentList) => { /* arguments here for page numbe
     }
   }
 }
-
 const appendPageLinks = (studentList) => {
-     // determine how many pages for this student list
-     let numberOfPages = Math.ceil(studentList / recordsPerPage);
-     // create a page link section
-     let pageLinks = $('.page').append('<div class="pagination"><ul></ul></div>');
-     // “for” every page
-     for (var i = 1; i < numberOfPages; i += 1) {
-       // add a page link to the page link section
-      $('.pagination ul').append('<li>' + '<a href="#"' + i + '</a>' + '</li>');
-      // remove the old page link section from the site
-     $('.pagination').remove();
-     // append our new page link section to the site
-     let newLinks = $('pageLinks').append();
-     // define what happens when you click a link
-     $('.pagination').attr('href').on('click', function() {
-       // Use the showPage function to display the page for the link clicked
-       showPage(1, studentList);
-       // mark that link as “active”
-       $('.pagination ul li a').addClass('active');
+  // determine how many pages for this student list
+  let numberOfPages = Math.ceil(studentList / recordsPerPage);
+  // create a page link section
+  let pageLinks = $('.page').append('<div class="pagination"></div>');
+  // “for” every page
+  for (var i = 1; i < numberOfPages; i += 1) {
+      // add a page link to the page link section
+      $(pageLinks).append('li' + '<a href="#">' + i + '</a>');
+  // remove the old page link section from the site
+  $(pageLinks).remove();
+  // append our new page link section to the site
+  $(pageLinks).append();
+  // define what happens when you click a link
+  $('.pagination').attr('href').on('click', function() {
+      // Use the showPage function to display the page for the link clicked
+      showPage(1, studentList);
+      // mark that link as “active”
+      $(pageLinks a).addClass('active');
      });
    }
 }
-
-
+appendPageLinks();
 
  function searchList() {
      // Obtain the value of the search input
