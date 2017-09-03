@@ -1,30 +1,31 @@
-let recordsPerPage = 10;
-let $search = $('.page-header').append(' <div class="student-search"><input placeholder="Search for students..."> <button>Search</button></div>');
-//let $studentItem = $('.student-item');
+
+
+const recordsPerPage = 10;
 let $studentList = $('.student-list').children();
-let $countPages = $studentList.length;
+let $studentListLength = $studentList.length;
 let pageNumber;
 let $pageLinks;
+let matchedStudentList = [];
 
+//function to show student list by 10s and page number
 const showPage = (pageNumber, $studentList) => { /* arguments here for page number and student list */
   // first hide all students on the page
   $($studentList).hide();
   // Then loop through all students in our student list argument
-  for (let i = 0; i < $countPages; i += 1) {
-  // if student should be on this page number
+  for (let i = 0; i < $studentListLength; i += 1) {
+  // if student should be on this page number - grouping into 10
   if (i < pageNumber * recordsPerPage && i + 1 > (pageNumber - 1) * recordsPerPage) {
     // show the students
     $($studentList[i]).show();
     }
   }
 }
-// set the default page
-//showPage(2, $studentList);
-
+  // test this function.
+  //showPage(2, $studentList);
 
 const appendPageLinks = ($studentList) => {
   // determine how many pages for this student list
-  let $numberOfPages = Math.ceil($countPages / recordsPerPage);
+  let $numberOfPages = Math.ceil($studentListLength / recordsPerPage);
   // create a page link section
   let $pagination = $('<div class="pagination"></div>');
   $('.page').append($pagination);
@@ -33,52 +34,94 @@ const appendPageLinks = ($studentList) => {
   $('.pagination').append($ul);
 
   // “for” every page
-  for (var i = 1; i <= $numberOfPages; i += 1) {
-    // add a page link to the page link section
-    let $pageLinks = $($ul).append('<li><a href="#">' + i + '</a></li>');
-  }
+    for (var i = 1; i <= $numberOfPages; i += 1) {
 
+      //add a page link to the page link section for every page
+      let $pageLinks = $($ul).append('<li><a href="#">' + i + '</a></li>');
+
+      //create a default page 1
+      if (i === 1) {
+      //call the function with argument page 1
+      showPage(1, $studentList);
+      //add active class to default page 1
+      $('.pagination ul li a').attr('class', 'active');
+      //end default page 1
+      } //end if
+    } //end the loop
 
   // remove the old page link section from the site - clean up
-        $($pageLinks).click(function(){
-            $($pageLinks).remove();
-            // append our new page link section to the site
-            $($pageLinks).append();
-        });
+  $($pageLinks).remove();
+
+  // append our new page link section to the site
+  $('.pagination').append($pageLinks);
 
   // define what happens when you click a link
-  $($pageLinks).click(function(event) {
-  // Use the showPage function to display the page for the link clicked
-  showPage(event.this, $studentList);
-  // mark that link as “active”
-  $(this).addClass('active');
-  });
-}
+  $('.pagination li a').click(function() {
+      // create a variable to hold the value of the links (this = pagination links)
+      let $aClicked = $(this).text();
+      // Use the showPage function to display the page for the link clicked
+      showPage($aClicked, $studentList);
+      //first remove class to start fresh
+      $('.active').removeClass('active');
+      // mark new pagination links as “active”
+      $(this).addClass('active');
+    }); //end click function
+  } // end appendPageLinks function
 
+//call the appendPageLinks function with $studentList as argument
 appendPageLinks($studentList);
 
- // function searchList() {
- //     // Obtain the value of the search input
- //     let $searchValue = $(search).attr(input).val();
- //
- //     // remove the previous page link section
- //     $('.previousPage').on('sticky-end', function() {
- //     $('.email-text').remove();
- //     });
- //
- //
- //     // Loop over the student list, and for each student…
- // // ...obtain the student’s name…
- // // ...and the student’s email…
- // // ...if the search value is found inside either email or name…
- //     		// ...add this student to list of “matched” student
- //     // If there’s no “matched” students…
- //            // ...display a “no student’s found” message
- //     // If over ten students were found…
- //            // ...call appendPageLinks with the matched students
- //    // Call showPage to show first ten students of matched list
- //
- //    // Reset form fields
- //    $('searchValue').val("Search for students...");
- //
- // }
+//exceeds --------------------------------------->
+
+//create the search box
+let $search = $('.page-header').append('<div class="student-search"><input id="searchInput" placeholder="Search for students..."> <button>Search</button></div>');
+
+function searchList() {
+    //change the h2 header when a search is made
+    $('h2').replaceWith('<h2>Search Results:</h2>');
+    //$('.page').append('<h2>You searched for' + $searchValue + '</h2>');
+    // Obtain the value of the search input
+    let $searchValue = $('#searchInput').val().toLowerCase();
+    //to check and make sure the $searchValue is passing
+    console.log($searchValue);
+    // remove the previous page link section
+    $('.pagination').remove();
+    // Loop over the student list, and for each student…
+        for (i = 0; i < $studentListLength; i += 1) {
+              // ...obtain the student’s name…
+              $studentName = $($studentList[i]).find('h3');
+              // ...and the student’s email…
+              $studentEmail = $($studentList[i]).find('.email');
+              // ...if the search value is found inside either email or name…IndexOf() returns -1 if nothing matches, so !== -1 will see if anything at all matches
+              if ($studentName.text().indexOf($searchValue) !== -1 || $studentEmail.text().indexOf($searchValue) !== -1){
+                // ...add this student to matchedStudentList array
+                matchedStudentList.push($($studentName, $($studentEmail)).parents('.student-item'));
+                //we need to hide the student list or the search results will follow the list
+                $($studentList).hide();
+                //checking to make sure everything is passing
+                console.log($studentName);
+                console.log($studentEmail);
+                console.log(matchedStudentList);
+                console.log(matchedStudentList.length);
+            } //end if
+          } //end for loop
+
+      // If there’s no “matched” students…
+      if (matchedStudentList.length === 0){
+          // hide the student list
+          $($studentList).hide();
+          // display a “no student’s found” message
+          $('.page').append('<div class="no-matches"><h2>Sorry, no matches.</h2></div>')
+      } // end if
+
+     // If over ten students were found…
+     if (matchedStudentList.length > 9) {
+     // ...call appendPageLinks with the matched students
+     appendPageLinks(matchedStudentList);
+    }
+    // Call showPage to show first ten students of matched list
+    showPage(1, matchedStudentList);
+     //somehow I need to reset and reload the page to get the search to work properly if button is clicked again. I feel like I have googled this to death to no success. Any hints would be helpful. :)
+  }
+//add a click event for the search button
+$('button').click(searchList);
