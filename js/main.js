@@ -1,5 +1,3 @@
-
-
 const recordsPerPage = 10;
 let $studentList = $('.student-list').children();
 let $studentListLength = $studentList.length;
@@ -98,6 +96,8 @@ function searchList() {
                 matchedStudentList.push($($studentName, $($studentEmail)).parents('.student-item'));
                 //we need to hide the student list or the search results will follow the list
                 $($studentList).hide();
+                //hide the no matches section if there is a match
+                $('.no-matches').hide();
                 //checking to make sure everything is passing
                 console.log($studentName);
                 console.log($studentEmail);
@@ -114,14 +114,13 @@ function searchList() {
           $('.page').append('<div class="no-matches"><h2>Sorry, no matches.</h2></div>')
       } // end if
 
-     // If over ten students were found…
-     if (matchedStudentList.length > 9) {
-     // ...call appendPageLinks with the matched students
-     appendPageLinks(matchedStudentList);
-    }
+      // If over ten students were found…
+      if (matchedStudentList.length > 10) {
+        // ...call appendPageLinks with the matched students
+        appendPageLinks(matchedStudentList);
+      } //end if
     // Call showPage to show first ten students of matched list
     showPage(1, matchedStudentList);
-     //somehow I need to reset and reload the page to get the search to work properly if button is clicked again. I feel like I have googled this to death to no success. Any hints would be helpful. :)
   }
 //add a click event for the search button
 $('button').click(searchList);
