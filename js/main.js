@@ -119,7 +119,6 @@ function searchList() {
       if (matchedStudentList.length > 10) {
         // ...call appendPageLinks with the matched students
         appendPageLinks(matchedStudentList);
-        let $numberOfPages = Math.ceil(matchedStudentList.length / recordsPerPage);
       } //end if
     // Call showPage to show first ten students of matched list
     showPage(1, matchedStudentList);
