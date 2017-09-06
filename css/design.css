@@ -120,13 +120,3 @@ body{
 .no-matches {
     color: red;
 }
-.sticky {
-    margin: 50px auto;
-    position: fixed;
-    width: 70%;
-    height: 100px;
-    background: linear-gradient(#708090, transparent 90%);
-    border-radius: 0 0 10px 10px;
-    overflow: inherit;
-
-}
