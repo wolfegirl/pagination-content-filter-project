@@ -6,24 +6,24 @@ let $pageLinks;
 let matchedStudentList = [];
 
 //function to show student list by 10s and page number
-const showPage = (pageNumber, $studentList) => { /* arguments here for page number and student list */
+const showPage = (pageNumber, showStudentList) => { /* arguments here for page number and student list */
   // first hide all students on the page
   $($studentList).hide();
   // Then loop through all students in our student list argument
-  for (let i = 0; i < $studentListLength; i += 1) {
+  for (let i = 0; i < showStudentList.length; i += 1) {
   // if student should be on this page number - grouping into 10
   if (i < pageNumber * recordsPerPage && i + 1 > (pageNumber - 1) * recordsPerPage) {
     // show the students
-    $($studentList[i]).show();
+    $(showStudentList[i]).show();
     }
   }
 }
   // test this function.
   //showPage(2, $studentList);
 
-const appendPageLinks = ($studentList) => {
+const appendPageLinks = (appendStudentList) => {
   // determine how many pages for this student list
-  let $numberOfPages = Math.ceil($studentListLength / recordsPerPage);
+  let $numberOfPages = Math.ceil(appendStudentList.length / recordsPerPage);
   // create a page link section
   let $pagination = $('<div class="pagination"></div>');
   $('.page').append($pagination);
@@ -40,7 +40,7 @@ const appendPageLinks = ($studentList) => {
       //create a default page 1
       if (i === 1) {
       //call the function with argument page 1
-      showPage(1, $studentList);
+      showPage(1, appendStudentList);
       //add active class to default page 1
       $('.pagination ul li a').attr('class', 'active');
       //end default page 1
@@ -58,7 +58,7 @@ const appendPageLinks = ($studentList) => {
       // create a variable to hold the value of the links (this = pagination links)
       let $aClicked = $(this).text();
       // Use the showPage function to display the page for the link clicked
-      showPage($aClicked, $studentList);
+      showPage($aClicked, appendStudentList);
       //first remove class to start fresh
       $('.active').removeClass('active');
       // mark new pagination links as “active”
@@ -75,9 +75,10 @@ appendPageLinks($studentList);
 let $search = $('.page-header').append('<div class="student-search"><input id="searchInput" placeholder="Search for students..."> <button>Search</button></div>');
 
 function searchList() {
+    //start with no students in the matched list
+    matchedStudentList.length = 0;
     //change the h2 header when a search is made
     $('h2').replaceWith('<h2>Search Results:</h2>');
-    //$('.page').append('<h2>You searched for' + $searchValue + '</h2>');
     // Obtain the value of the search input
     let $searchValue = $('#searchInput').val().toLowerCase();
     //to check and make sure the $searchValue is passing
@@ -118,6 +119,7 @@ function searchList() {
       if (matchedStudentList.length > 10) {
         // ...call appendPageLinks with the matched students
         appendPageLinks(matchedStudentList);
+        let $numberOfPages = Math.ceil(matchedStudentList.length / recordsPerPage);
       } //end if
     // Call showPage to show first ten students of matched list
     showPage(1, matchedStudentList);
